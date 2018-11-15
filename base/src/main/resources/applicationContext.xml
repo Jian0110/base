@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/spring-aop.xsd
+      ">
+
+    <!-- 1、扫描包 -->
+    <context:component-scan base-package="com.lijian"/>
+    <!-- 2、引入db.properties -->
+    <context:property-placeholder location="classpath:db.properties"/>
+    <!-- 3、配置数据源-->
+    <bean id="DruidDataSource" class="com.alibaba.druid.pool.DruidDataSource"
+          init-method="init" destroy-method="close">
+        <property name="driverClassName" value="${jdbc.driverName}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+        <property name="initialSize" value="${druid.initialSize}"/>
+        <property name="minIdle" value="${druid.minIdle}"/>
+        <property name="maxActive" value="${druid.maxActive}"/>
+        <property name="maxWait" value="${druid.maxWait}"/>
+    </bean>
+    <!-- 4.配置sqlSessionFactory -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!-- 数据源 -->
+        <property name="dataSource" ref="DruidDataSource"/>
+        <!-- sql映射文件路径(mapper子包及其下所有Mapper.xml) -->
+        <property name="mapperLocations" value="classpath:com/lijian/mybatis/mapper/*.xml"/>
+        <!--加载mybatis配置文件，spring整合mybatis之后可以不用加载，但是日后可能会需要到-->
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+    </bean>
+    <!--5、配置自动扫描对象关系映射-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!-- 单数据源不需要装配sqlSessionFactory，MapperScannerConfigurer会自动装配-->
+        <!--<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>-->
+        <!-- 自动扫描Mapper接口（mapper接口与xml不在同一个目录下） -->
+        <property name="basePackage" value="com.lijian.mapper"/>
+    </bean>
+    <!--6、配置定义事物管理器，由spring管理事务 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="DruidDataSource"/>
+    </bean>
+    <!--7、配置支持注解驱动的事务管理，指定事务管理器 -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+</beans>

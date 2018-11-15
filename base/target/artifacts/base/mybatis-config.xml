@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!--entity别名扫描配置默认-->
+    <typeAliases>
+        <package name="com.lijian.entity"/>
+    </typeAliases>
+    <!-- 分页插件 -->
+    <!--<plugins>
+        <plugin interceptor="com.github.pagehelper.PageInterceptor">
+            &lt;!&ndash; PageHelper4.0.0支持自动识别数据库 &ndash;&gt;
+            &lt;!&ndash; <property name="dialect" value="oracle"/> &ndash;&gt;
+            &lt;!&ndash; 分页参数支持 ，在方法中使用@Parm("pageNumKey") @Parm("pageSizeKey")即可支持分页&ndash;&gt;
+            <property name="supportMethodsArguments" value="true"/>
+            <property name="params" value="pageNum=pageNumKey;pageSize=pageSizeKey;"/>
+        </plugin>
+    </plugins>-->
+</configuration>
